@@ -1,0 +1,16 @@
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# 备份文件（不入库）
+*.bak
+*.bak.*
+
+# 日志
+*.log
+
+# IDE
+.vscode/
+.idea/
