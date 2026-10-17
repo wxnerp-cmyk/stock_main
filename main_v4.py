@@ -1341,9 +1341,9 @@ function prewarmFutures(){
 }
 setTimeout(prewarmFutures, 300);
 // —— 形态总数徽标(2026-10-14 需求): "技术分析"菜单项后面的总数, 即使在地别的模块也可见 ——
-// 数据源(2026-10-17 起): stock_app 优先返回【技术分析页每拍上报的当前页口径】, 与页面顶部
-//   "🔔 形态 N"严格同源(用户诉求"没同步"); 页面从未打开时回落服务端 15s 聚合的全局口径兜底。
-//   这里 20s 轮询; 超过 90s 没更新(页面已关闭)则变灰提示陈旧, 数值保留页面最后所见。
+// 单一数据源(2026-10-17 用户裁定): 数字=服务端 _pat_total_refresh 聚合值, 页面顶栏徽标/
+// 右下角悬浮球/预警明细也全部调同一个接口(GET /api/gw/stocktech/api/pattern_total)取这个值,
+// 四处永远同数。这里 20s 轮询; 超过 90s 没更新(聚合线程异常)则变灰提示陈旧。
 function patTotalTick(){
   fetch('/api/gw/stocktech/api/pattern_total',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
     var el=document.getElementById('navPatTotal'); if(!el) return;
@@ -1352,8 +1352,7 @@ function patTotalTick(){
       var stale=(d.age<0)||(d.age>90);
       el.classList.toggle('stale',stale);
       el.title='形态总数(技术分析)'+(stale?' · 数据陈旧':'')+' · 更新于 '+(d.updated_at||'--')
-        +' · 覆盖 '+d.ready+'/'+d.scope+' 个标的'
-        +' · 来源 '+(d.src==='page'?'技术分析页(实时)':'服务端聚合');
+        +' · 覆盖 '+d.ready+'/'+d.scope+' 个标的 · 服务端聚合(与页面顶栏/悬浮球同源)';
     }
   }).catch(function(){});
 }
